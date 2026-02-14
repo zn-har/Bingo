@@ -3,12 +3,12 @@
 // ==========================================
 
 const App = (() => {
-  const appEl = () => document.getElementById('app');
-  const header = () => document.getElementById('app-header');
-  const bottomBar = () => document.getElementById('bottom-bar');
+  const appEl = () => document.getElementById("app");
+  const header = () => document.getElementById("app-header");
+  const bottomBar = () => document.getElementById("bottom-bar");
 
   function init() {
-    window.addEventListener('hashchange', route);
+    window.addEventListener("hashchange", route);
     route();
   }
 
@@ -17,53 +17,53 @@ const App = (() => {
     BoardPage.stopPolling();
     ScannerPage.cleanup();
 
-    const hash = window.location.hash || '';
+    const hash = window.location.hash || "";
     const container = appEl();
 
     // Default UI state: show header & bottom bar
-    header().classList.remove('hidden');
-    bottomBar().classList.remove('hidden');
+    header().classList.remove("hidden");
+    bottomBar().classList.remove("hidden");
 
     // Not signed up => force signup
-    if (!Utils.getPlayerId() && !hash.startsWith('#signup')) {
-      header().classList.add('hidden');
-      bottomBar().classList.add('hidden');
-      window.location.hash = '#signup';
+    if (!Utils.getPlayerId() && !hash.startsWith("#signup")) {
+      header().classList.add("hidden");
+      bottomBar().classList.add("hidden");
+      window.location.hash = "#signup";
       return;
     }
 
-    if (hash.startsWith('#confirm/')) {
-      const targetId = hash.split('/')[1];
+    if (hash.startsWith("#confirm/")) {
+      const targetId = hash.split("/")[1];
       if (Utils.isValidUUID(targetId)) {
         ConfirmPage.render(container, targetId);
-        bottomBar().classList.add('hidden');
+        bottomBar().classList.add("hidden");
       } else {
-        Utils.showToast('Invalid player ID', 'error');
-        window.location.hash = '#board';
+        Utils.showToast("Invalid player ID", "error");
+        window.location.hash = "#board";
       }
       return;
     }
 
     switch (hash) {
-      case '#signup':
-        header().classList.add('hidden');
-        bottomBar().classList.add('hidden');
+      case "#signup":
+        header().classList.add("hidden");
+        bottomBar().classList.add("hidden");
         SignupPage.render(container);
         break;
 
-      case '#scan':
+      case "#scan":
         ScannerPage.render(container);
         break;
 
-      case '#gameover':
-        bottomBar().classList.add('hidden');
+      case "#gameover":
+        bottomBar().classList.add("hidden");
         GameOverPage.render(container);
         break;
 
-      case '#board':
+      case "#board":
       default:
         if (!Utils.getPlayerId()) {
-          window.location.hash = '#signup';
+          window.location.hash = "#signup";
         } else {
           BoardPage.render(container);
         }
@@ -75,4 +75,4 @@ const App = (() => {
 })();
 
 // Boot the app
-document.addEventListener('DOMContentLoaded', App.init);
+document.addEventListener("DOMContentLoaded", App.init);

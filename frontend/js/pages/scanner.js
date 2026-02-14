@@ -8,13 +8,13 @@ const ScannerPage = (() => {
   function render(container) {
     const playerId = Utils.getPlayerId();
     if (!playerId) {
-      window.location.hash = '#signup';
+      window.location.hash = "#signup";
       return;
     }
 
     // Hide header and bottom bar for full-screen scanner
-    document.getElementById('app-header').classList.add('hidden');
-    document.getElementById('bottom-bar').classList.add('hidden');
+    document.getElementById("app-header").classList.add("hidden");
+    document.getElementById("bottom-bar").classList.add("hidden");
 
     container.innerHTML = `
       <div class="scanner-overlay" id="scanner-overlay">
@@ -31,26 +31,26 @@ const ScannerPage = (() => {
       </div>
     `;
 
-    document.getElementById('scanner-close').addEventListener('click', goBack);
+    document.getElementById("scanner-close").addEventListener("click", goBack);
     startScanner();
   }
 
   async function startScanner() {
     try {
-      scanner = new Html5Qrcode('qr-reader');
+      scanner = new Html5Qrcode("qr-reader");
 
       await scanner.start(
-        { facingMode: 'environment' },
+        { facingMode: "environment" },
         {
           fps: 10,
           qrbox: { width: 250, height: 250 },
           aspectRatio: 1.0,
         },
         onScanSuccess,
-        () => {} // Ignore scan failures (no QR found in frame)
+        () => {}, // Ignore scan failures (no QR found in frame)
       );
     } catch (err) {
-      const container = document.getElementById('scanner-overlay');
+      const container = document.getElementById("scanner-overlay");
       if (container) {
         container.innerHTML = `
           <div class="scanner-header">
@@ -65,7 +65,9 @@ const ScannerPage = (() => {
             <p style="font-size:13px;opacity:0.7;max-width:280px;">Please allow camera access in your browser settings to scan QR codes.</p>
           </div>
         `;
-        document.getElementById('scanner-close-err').addEventListener('click', goBack);
+        document
+          .getElementById("scanner-close-err")
+          .addEventListener("click", goBack);
       }
     }
   }
@@ -77,14 +79,14 @@ const ScannerPage = (() => {
     const scannedId = decodedText.trim();
 
     if (!Utils.isValidUUID(scannedId)) {
-      Utils.showToast('Invalid QR code', 'error');
+      Utils.showToast("Invalid QR code", "error");
       goBack();
       return;
     }
 
     // Check self-scan
     if (scannedId === Utils.getPlayerId()) {
-      Utils.showToast('You cannot scan your own QR code!', 'error');
+      Utils.showToast("You cannot scan your own QR code!", "error");
       goBack();
       return;
     }
@@ -105,15 +107,15 @@ const ScannerPage = (() => {
   function goBack() {
     stopScanner();
     // Restore header and bottom bar
-    document.getElementById('app-header').classList.remove('hidden');
-    document.getElementById('bottom-bar').classList.remove('hidden');
-    window.location.hash = '#board';
+    document.getElementById("app-header").classList.remove("hidden");
+    document.getElementById("bottom-bar").classList.remove("hidden");
+    window.location.hash = "#board";
   }
 
   function cleanup() {
     stopScanner();
-    document.getElementById('app-header').classList.remove('hidden');
-    document.getElementById('bottom-bar').classList.remove('hidden');
+    document.getElementById("app-header").classList.remove("hidden");
+    document.getElementById("bottom-bar").classList.remove("hidden");
   }
 
   return { render, cleanup };

@@ -8,7 +8,7 @@ const ConfirmPage = (() => {
   function render(container, scannedTargetId) {
     const playerId = Utils.getPlayerId();
     if (!playerId) {
-      window.location.hash = '#signup';
+      window.location.hash = "#signup";
       return;
     }
 
@@ -26,7 +26,7 @@ const ConfirmPage = (() => {
 
       // Filter incomplete tasks (exclude free space)
       const incompleteTasks = board
-        .filter(c => !c.completed && !c.is_free_space)
+        .filter((c) => !c.completed && !c.is_free_space)
         .sort((a, b) => a.position - b.position);
 
       if (incompleteTasks.length === 0) {
@@ -91,18 +91,22 @@ const ConfirmPage = (() => {
   }
 
   function renderTaskList(tasks, playerId, targetId, container) {
-    const list = document.getElementById('task-list');
+    const list = document.getElementById("task-list");
     if (!list) return;
 
-    list.innerHTML = tasks.map(task => `
+    list.innerHTML = tasks
+      .map(
+        (task) => `
       <div class="task-item" data-task-id="${task.task_id}">
         <span class="task-item-text">${escapeHtml(task.description)}</span>
         <span class="material-symbols-outlined task-item-arrow">chevron_right</span>
       </div>
-    `).join('');
+    `,
+      )
+      .join("");
 
-    list.addEventListener('click', (e) => {
-      const item = e.target.closest('.task-item');
+    list.addEventListener("click", (e) => {
+      const item = e.target.closest(".task-item");
       if (!item) return;
       const taskId = parseInt(item.dataset.taskId, 10);
       submitTask(container, playerId, targetId, taskId);
@@ -111,10 +115,10 @@ const ConfirmPage = (() => {
 
   async function submitTask(container, playerId, targetId, taskId) {
     // Disable the list
-    const items = container.querySelectorAll('.task-item');
-    items.forEach(el => {
-      el.style.pointerEvents = 'none';
-      el.style.opacity = '0.5';
+    const items = container.querySelectorAll(".task-item");
+    items.forEach((el) => {
+      el.style.pointerEvents = "none";
+      el.style.opacity = "0.5";
     });
 
     try {
@@ -130,7 +134,7 @@ const ConfirmPage = (() => {
       // Check if game ended
       if (!result.game_active) {
         setTimeout(() => {
-          window.location.hash = '#gameover';
+          window.location.hash = "#gameover";
         }, 2000);
       }
     } catch (err) {
@@ -157,12 +161,14 @@ const ConfirmPage = (() => {
   }
 
   function showWinResult(container, winTypes) {
-    const winLabel = winTypes.map(w => {
-      if (w === 'row') return 'Row';
-      if (w === 'column') return 'Column';
-      if (w === 'full') return 'Full Board';
-      return w;
-    }).join(', ');
+    const winLabel = winTypes
+      .map((w) => {
+        if (w === "row") return "Row";
+        if (w === "column") return "Column";
+        if (w === "full") return "Full Board";
+        return w;
+      })
+      .join(", ");
 
     container.innerHTML = `
       <div class="result-card fade-in">
@@ -207,21 +213,29 @@ const ConfirmPage = (() => {
   }
 
   function launchConfetti() {
-    const colors = ['#257bf4', '#22c55e', '#f59e0b', '#ef4444', '#a855f7', '#ec4899'];
+    const colors = [
+      "#257bf4",
+      "#22c55e",
+      "#f59e0b",
+      "#ef4444",
+      "#a855f7",
+      "#ec4899",
+    ];
     for (let i = 0; i < 50; i++) {
-      const piece = document.createElement('div');
-      piece.className = 'confetti-piece';
-      piece.style.left = Math.random() * 100 + 'vw';
-      piece.style.background = colors[Math.floor(Math.random() * colors.length)];
-      piece.style.animationDuration = (2 + Math.random() * 3) + 's';
-      piece.style.animationDelay = Math.random() * 1 + 's';
+      const piece = document.createElement("div");
+      piece.className = "confetti-piece";
+      piece.style.left = Math.random() * 100 + "vw";
+      piece.style.background =
+        colors[Math.floor(Math.random() * colors.length)];
+      piece.style.animationDuration = 2 + Math.random() * 3 + "s";
+      piece.style.animationDelay = Math.random() * 1 + "s";
       document.body.appendChild(piece);
       setTimeout(() => piece.remove(), 6000);
     }
   }
 
   function escapeHtml(str) {
-    const div = document.createElement('div');
+    const div = document.createElement("div");
     div.textContent = str;
     return div.innerHTML;
   }

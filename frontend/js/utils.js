@@ -3,8 +3,8 @@
 // ==========================================
 
 const Utils = (() => {
-  const PLAYER_KEY = 'bingo_player_id';
-  const PLAYER_NAME_KEY = 'bingo_player_name';
+  const PLAYER_KEY = "bingo_player_id";
+  const PLAYER_NAME_KEY = "bingo_player_name";
 
   return {
     getPlayerId() {
@@ -28,12 +28,12 @@ const Utils = (() => {
       localStorage.removeItem(PLAYER_NAME_KEY);
     },
 
-    showToast(message, type = 'info') {
-      const toast = document.getElementById('toast');
+    showToast(message, type = "info") {
+      const toast = document.getElementById("toast");
       toast.textContent = message;
       toast.className = `toast toast-${type} show`;
       setTimeout(() => {
-        toast.classList.remove('show');
+        toast.classList.remove("show");
       }, 3000);
     },
 
@@ -47,7 +47,9 @@ const Utils = (() => {
     },
 
     isValidUUID(str) {
-      return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
+      return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        str,
+      );
     },
   };
 })();

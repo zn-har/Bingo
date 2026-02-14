@@ -28,22 +28,25 @@ const SignupPage = (() => {
       </div>
     `;
 
-    document.getElementById('signup-form').addEventListener('submit', handleSubmit);
+    document
+      .getElementById("signup-form")
+      .addEventListener("submit", handleSubmit);
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const btn = document.getElementById('signup-btn');
-    const name = document.getElementById('signup-name').value.trim();
-    const phone = document.getElementById('signup-phone').value.trim();
+    const btn = document.getElementById("signup-btn");
+    const name = document.getElementById("signup-name").value.trim();
+    const phone = document.getElementById("signup-phone").value.trim();
 
     if (!name || !phone) {
-      Utils.showToast('Please fill in all fields', 'error');
+      Utils.showToast("Please fill in all fields", "error");
       return;
     }
 
     btn.disabled = true;
-    btn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px;"></div>';
+    btn.innerHTML =
+      '<div class="spinner" style="width:20px;height:20px;border-width:2px;"></div>';
 
     try {
       const player = await API.register(name, phone);
@@ -51,11 +54,12 @@ const SignupPage = (() => {
       Utils.setPlayerName(player.name);
 
       // Show QR code before going to board
-      showQRSuccess(document.getElementById('app'), player);
+      showQRSuccess(document.getElementById("app"), player);
     } catch (err) {
-      Utils.showToast(err.message || 'Registration failed', 'error');
+      Utils.showToast(err.message || "Registration failed", "error");
       btn.disabled = false;
-      btn.innerHTML = '<span class="material-symbols-outlined">person_add</span> Join the Game';
+      btn.innerHTML =
+        '<span class="material-symbols-outlined">person_add</span> Join the Game';
     }
   }
 
@@ -68,9 +72,10 @@ const SignupPage = (() => {
         <h2 class="signup-title">Welcome, ${escapeHtml(player.name)}!</h2>
         <p class="signup-subtitle">Here's your unique QR code. Show it to other players when they scan you.</p>
         <div class="qr-display">
-          ${player.qr_code_url
-            ? `<img src="${player.qr_code_url}" alt="Your QR Code" />`
-            : `<p style="color:var(--text-muted)">QR code generating...</p>`
+          ${
+            player.qr_code_url
+              ? `<img src="${player.qr_code_url}" alt="Your QR Code" />`
+              : `<p style="color:var(--text-muted)">QR code generating...</p>`
           }
           <p>Player ID: ${player.id.substring(0, 8)}...</p>
         </div>
@@ -85,7 +90,7 @@ const SignupPage = (() => {
   }
 
   function escapeHtml(str) {
-    const div = document.createElement('div');
+    const div = document.createElement("div");
     div.textContent = str;
     return div.innerHTML;
   }

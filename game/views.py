@@ -1,3 +1,4 @@
+import base64
 import io
 import os
 
@@ -21,14 +22,25 @@ from .serializers import (
 FREE_SPACE_POSITION = 12
 
 
-def _generate_qr(player):
-    """Generate a QR code image containing the player's UUID."""
-    img = qrcode.make(str(player.id), box_size=10, border=2)
+def _generate_qr_dataurl(player_id):
+    """Generate a QR code as a data URL (no file storage)."""
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=2,
+    )
+    qr.add_data(str(player_id))
+    qr.make(fit=True)
+
+    img = qr.make_image(fill_color="black", back_color="white")
     buf = io.BytesIO()
     img.save(buf, format="PNG")
     buf.seek(0)
-    filename = f"qr_{player.id}.png"
-    player.qr_code.save(filename, ContentFile(buf.read()), save=True)
+
+    # Convert to base64 data URL
+    img_base64 = base64.b64encode(buf.getvalue()).decode()
+    return f"data:image/png;base64,{img_base64}"
 
 
 def _check_wins(player):
@@ -72,17 +84,16 @@ def register_player(request):
     phone = serializer.validated_data["phone"]
     existing = Player.objects.filter(phone=phone).first()
     if existing:
-        return Response(
-            PlayerSerializer(existing, context={"request": request}).data,
-            status=status.HTTP_200_OK,
-        )
+        response_data = PlayerSerializer(existing, context={"request": request}).data
+        # Generate fresh QR code data URL for existing player
+        response_data["qr_code_url"] = _generate_qr_dataurl(existing.id)
+        return Response(response_data, status=status.HTTP_200_OK)
 
     player = serializer.save()
-    _generate_qr(player)
-    return Response(
-        PlayerSerializer(player, context={"request": request}).data,
-        status=status.HTTP_201_CREATED,
-    )
+    response_data = PlayerSerializer(player, context={"request": request}).data
+    # Generate QR code data URL (no file storage)
+    response_data["qr_code_url"] = _generate_qr_dataurl(player.id)
+    return Response(response_data, status=status.HTTP_201_CREATED)
 
 
 @api_view(["GET"])
@@ -93,7 +104,10 @@ def get_player(request, player_id):
     except Player.DoesNotExist:
         return Response({"error": "Player not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    return Response(PlayerSerializer(player, context={"request": request}).data)
+    response_data = PlayerSerializer(player, context={"request": request}).data
+    # Generate QR code data URL on-the-fly
+    response_data["qr_code_url"] = _generate_qr_dataurl(player.id)
+    return Response(response_data)
 
 
 @api_view(["GET"])

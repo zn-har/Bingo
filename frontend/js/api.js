@@ -4,12 +4,12 @@
 
 const API = (() => {
   // Change this to your Render backend URL in production
-  const BASE = window.BINGO_API_BASE || 'http://localhost:8000/api';
+  const BASE = window.BINGO_API_BASE || "http://localhost:8000/api";
 
   async function request(path, options = {}) {
     const url = `${BASE}${path}`;
     const config = {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { "Content-Type": "application/json" },
       ...options,
     };
     const res = await fetch(url, config);
@@ -25,8 +25,8 @@ const API = (() => {
 
   return {
     register(name, phone) {
-      return request('/register/', {
-        method: 'POST',
+      return request("/register/", {
+        method: "POST",
         body: JSON.stringify({ name, phone }),
       });
     },
@@ -40,8 +40,8 @@ const API = (() => {
     },
 
     submitScan(scannerId, targetId, taskId) {
-      return request('/scan/', {
-        method: 'POST',
+      return request("/scan/", {
+        method: "POST",
         body: JSON.stringify({
           scanner_id: scannerId,
           target_id: targetId,
@@ -51,15 +51,15 @@ const API = (() => {
     },
 
     getGameState() {
-      return request('/game-state/');
+      return request("/game-state/");
     },
 
     getWinners() {
-      return request('/winners/');
+      return request("/winners/");
     },
 
     getTasks() {
-      return request('/tasks/');
+      return request("/tasks/");
     },
 
     getPlayerScans(playerId) {
