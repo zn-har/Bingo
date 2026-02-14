@@ -44,7 +44,7 @@ def _generate_qr_dataurl(player_id):
 
 
 def _check_wins(player):
-    """Check if a player has completed a row, column, or full board."""
+    """Check if a player has completed a row, column, diagonal, or full board."""
     completed_positions = set(
         ScanRecord.objects.filter(scanner=player).values_list("task__position", flat=True)
     )
@@ -66,6 +66,14 @@ def _check_wins(player):
         if col_positions.issubset(completed_positions):
             wins.append("column")
             break
+
+    # Check diagonals
+    diagonal1 = {0, 6, 12, 18, 24}  # Top-left to bottom-right
+    diagonal2 = {4, 8, 12, 16, 20}  # Top-right to bottom-left
+    if diagonal1.issubset(completed_positions):
+        wins.append("diagonal")
+    elif diagonal2.issubset(completed_positions):
+        wins.append("diagonal")
 
     # Check full board
     if len(completed_positions) >= 25:
