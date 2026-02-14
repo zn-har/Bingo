@@ -66,7 +66,7 @@ class GameState(models.Model):
     """Singleton model tracking the overall game state."""
 
     game_active = models.BooleanField(default=True)
-    max_winners = models.IntegerField(default=5)
+    max_winners = models.IntegerField(default=10)
 
     class Meta:
         verbose_name = "Game State"
@@ -93,6 +93,7 @@ class Winner(models.Model):
     class WinType(models.TextChoices):
         ROW = "row", "Row"
         COLUMN = "column", "Column"
+        DIAGONAL = "diagonal", "Diagonal"
         FULL = "full", "Full Board"
 
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="wins")
