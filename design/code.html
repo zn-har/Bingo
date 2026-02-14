@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Horizon Fest Bingo Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#257bf4",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#101722",
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Spline Sans', sans-serif;
+        }
+        .bingo-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.75rem;
+        }
+        @media (max-width: 768px) {
+            .bingo-grid {
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen font-display">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 w-full border-b border-primary/20 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 md:px-10 py-3">
+<div class="max-w-7xl mx-auto flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="bg-primary p-2 rounded-lg text-white">
+<span class="material-symbols-outlined text-2xl">qr_code_scanner</span>
+</div>
+<div>
+<h2 class="text-lg md:text-xl font-bold leading-tight tracking-tight">Horizon Fest Bingo</h2>
+<div class="flex items-center gap-2">
+<span class="size-2 rounded-full bg-green-500 animate-pulse"></span>
+<span class="text-[10px] uppercase tracking-widest text-slate-500 dark:text-primary/70 font-bold">Live Sync Active</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex flex-col items-end mr-2">
+<p class="text-sm font-bold">Alex Rivera</p>
+<p class="text-xs text-primary font-medium">Pro Explorer • 1,250 XP</p>
+</div>
+<div class="relative">
+<div class="size-10 md:size-12 rounded-full border-2 border-primary p-0.5">
+<img alt="User avatar" class="rounded-full w-full h-full object-cover" data-alt="Young man with a friendly smile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfr9rP4NtRVuq1zDebGUz-wwCZ1U2cepL0EslME0ZGqifDSLVwA6s4VRKm8-LtW6C8OmWXuCfJlbHip0jntSH1yEqQ3h5DguBu7NK2ZgcFrbhpMfvp3w8GulpViqo-mIGPiipdp6R1civ7X2pCoFe_SD97akqStxJ9PEJ0pYNxOt9cIweKZBuIWq-rHXbMFPcV_DFKh-FBiCDH9I4lAhfJdpsxztQMNm59XOGHfGSAm26Hu2de6J7DixxpcVZI3hUa9kgGwFbuHAW_"/>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-primary text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-background-dark">
+                            LVL 8
+                        </div>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-1 max-w-5xl mx-auto w-full p-4 md:p-8 space-y-8">
+<!-- Progress & Stats Section -->
+<section class="bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-xl p-6 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-8xl">fact_check</span>
+</div>
+<div class="relative z-10">
+<div class="flex items-center gap-2 mb-4">
+<span class="bg-primary/20 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Selected Task</span>
+<span class="size-1.5 rounded-full bg-orange-500 animate-pulse"></span>
+<span class="text-xs text-slate-500 dark:text-slate-400 font-medium">In Progress</span>
+</div>
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div class="flex-1">
+<div class="flex items-center gap-3 mb-1">
+<h3 class="text-2xl md:text-3xl font-black tracking-tight text-slate-900 dark:text-white">Secret DJ Booth</h3>
+<span class="material-symbols-outlined text-primary">location_on</span>
+</div>
+<p class="text-primary font-bold text-sm mb-3">Category: <span class="uppercase tracking-wide">Places</span></p>
+<p class="text-slate-600 dark:text-slate-400 text-sm max-w-2xl leading-relaxed">
+                        Find the hidden DJ deck behind the main stage. You'll need to look for the neon headphones sign and ask the staff for the "Golden Record" access code to complete this challenge.
+                    </p>
+</div>
+<div class="flex flex-col sm:flex-row gap-3">
+<button class="px-6 py-2.5 bg-primary text-white font-bold rounded-lg text-sm shadow-lg shadow-primary/20 hover:bg-primary/90 transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">map</span>
+                            View Map
+                        </button>
+<button class="px-6 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-primary/30 font-bold rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-center">
+                            Cancel
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Bingo Category Headers -->
+<div class="grid grid-cols-5 gap-2 md:gap-3 text-center mb-[-1.5rem]">
+<div class="text-[10px] md:text-xs font-black tracking-widest text-slate-500 uppercase">People</div>
+<div class="text-[10px] md:text-xs font-black tracking-widest text-slate-500 uppercase">Places</div>
+<div class="text-[10px] md:text-xs font-black tracking-widest text-slate-500 uppercase">Trivia</div>
+<div class="text-[10px] md:text-xs font-black tracking-widest text-slate-500 uppercase">Games</div>
+<div class="text-[10px] md:text-xs font-black tracking-widest text-slate-500 uppercase">Random</div>
+</div>
+<!-- 5x5 Bingo Grid -->
+<div class="bingo-grid pb-24">
+<!-- ROW 1 -->
+<div class="aspect-square bg-primary text-white rounded-lg flex flex-col items-center justify-center p-2 text-center shadow-lg shadow-primary/30 relative">
+<span class="material-symbols-outlined text-xl mb-1">check_circle</span>
+<p class="text-[10px] md:text-xs font-bold leading-tight">Meet a Photographer</p>
+</div>
+<div class="aspect-square bg-white dark:bg-slate-800/50 border-2 border-primary/40 rounded-lg flex flex-col items-center justify-center p-2 text-center hover:border-primary cursor-pointer transition-colors group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform mb-1">location_on</span>
+<p class="text-[10px] md:text-xs font-bold leading-tight">Secret DJ Booth</p>
+</div>
+<div class="aspect-square bg-white dark:bg-slate-800/50 border-2 border-primary/40 rounded-lg flex flex-col items-center justify-center p-2 text-center hover:border-primary cursor-pointer transition-colors group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform mb-1">quiz</span>
+<p class="text-[10px] md:text-xs font-bold leading-tight">College Founder?</p>
+</div>
+<div class="aspect-square bg-slate-200 dark:bg-slate-900/50 border-2 border-transparent rounded-lg flex flex-col items-center justify-center p-2 text-center opacity-50 cursor-not-allowed">
+<span class="material-symbols-outlined text-slate-500 mb-1">lock</span>
+<p class="text-[10px] md:text-xs font-bold leading-tight text-slate-500">1v1 Win</p>
+</div>
+<div class="aspect-square bg-primary text-white rounded-lg flex flex-col items-center justify-center p-2 text-center shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined text-xl mb-1">check_circle</span>
+<p class="text-[10px] md:text-xs font-bold leading-tight">Yellow Shirt Spot</p>
+</div>
+<!-- ROW 2 -->
+<div class="aspect-square bg-white dark:bg-slate-800/50 border-2 border-primary/40 rounded-lg flex flex-col items-center justify-center p-2 text-center hover:border-primary cursor-pointer transition-colors group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform mb-1">group</span>
+<p class="text-[10px] md:text-xs font-bold leading-tight">Volunteer High-five</p>
+</div>
+<div class="aspect-square bg-primary text-white rounded-lg flex flex-col items-center justify-center p-2 text-center shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined text-xl mb-1">check_circle</span>
+<p class="text-[10px] md:text-xs font-bold leading-tight">Visit Tech Lab</p>
+</div>
+<div class="aspect-square bg-primary text-white rounded-lg flex flex-col items-center justify-center p-2 text-center shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined text-xl mb-1">check_circle</span>
+<p class="text-[10px] md:text-xs font-bold leading-tight">First Fest Year</p>
+</div>
+<div class="aspect-square bg-white dark:bg-slate-800/50 border-2 border-primary/40 rounded-lg flex flex-col items-center justify-center p-2 text-center hover:border-primary cursor-pointer transition-colors group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform mb-1">sports_esports</span>
+<p class="text-[10px] md:text-xs font-bold leading-tight">Obstacle Course</p>
+</div>
+<div class="aspect-square bg-white dark:bg-slate-800/50 border-2 border-primary/40 rounded-lg flex flex-col items-center justify-center p-2 text-center hover:border-primary cursor-pointer transition-colors group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform mb-1">camera_alt</span>
+<p class="text-[10px] md:text-xs font-bold leading-tight">Mascot Selfie</p>
+</div>
+<!-- ROW 3 (FREE SPACE CENTER) -->
+<div class="aspect-square bg-primary text-white rounded-lg flex flex-col items-center justify-center p-2 text-center shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined text-xl mb-1">check_circle</span>
+<p class="text-[10px] md:text-xs font-bold leading-tight">Find a Senior</p>
+</div>
+<div class="aspect-square bg-white dark:bg-slate-800/50 border-2 border-primary/40 rounded-lg flex flex-col items-center justify-center p-2 text-center hover:border-primary cursor-pointer transition-colors group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform mb-1">restaurant</span>
+<p class="text-[10px] md:text-xs font-bold leading-tight">Food Court Check-in</p>
+</div>
+<!-- FREE SPACE -->
+<div class="aspect-square bg-primary/20 border-2 border-primary rounded-lg flex flex-col items-center justify-center p-2 text-center relative overflow-hidden group">
+<div class="absolute inset-0 bg-primary/10 animate-pulse"></div>
+<span class="material-symbols-outlined text-primary text-3xl font-bold relative z-10">star</span>
+<p class="text-[10px] md:text-xs font-black text-primary uppercase relative z-10 tracking-tighter">FREE SPACE</p>
+</div>
+<div class="aspect-square bg-primary text-white rounded-lg flex flex-col items-center justify-center p-2 text-center shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined text-xl mb-1">check_circle</span>
+<p class="text-[10px] md:text-xs font-bold leading-tight">Karaoke Hit</p>
+</div>
+<div class="aspect-square bg-primary text-white rounded-lg flex flex-col items-center justify-center p-2 text-center shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined text-xl mb-1">check_circle</span>
+<p class="text-[10px] md:text-xs font-bold leading-tight">Blue Pen Quest</p>
+</div>
+<!-- ROW 4 -->
+<div class="aspect-square bg-primary text-white rounded-lg flex flex-col items-center justify-center p-2 text-center shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined text-xl mb-1">check_circle</span>
+<p class="text-[10px] md:text-xs font-bold leading-tight">Spot the Dean</p>
+</div>
+<div class="aspect-square bg-primary text-white rounded-lg flex flex-col items-center justify-center p-2 text-center shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined text-xl mb-1">check_circle</span>
+<p class="text-[10px] md:text-xs font-bold leading-tight">Hidden Alley</p>
+</div>
+<div class="aspect-square bg-white dark:bg-slate-800/50 border-2 border-primary/40 rounded-lg flex flex-col items-center justify-center p-2 text-center hover:border-primary cursor-pointer transition-colors group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform mb-1">history</span>
+<p class="text-[10px] md:text-xs font-bold leading-tight">First Principal?</p>
+</div>
+<div class="aspect-square bg-primary text-white rounded-lg flex flex-col items-center justify-center p-2 text-center shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined text-xl mb-1">check_circle</span>
+<p class="text-[10px] md:text-xs font-bold leading-tight">Dance Battle</p>
+</div>
+<div class="aspect-square bg-white dark:bg-slate-800/50 border-2 border-primary/40 rounded-lg flex flex-col items-center justify-center p-2 text-center hover:border-primary cursor-pointer transition-colors group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform mb-1">shopping_bag</span>
+<p class="text-[10px] md:text-xs font-bold leading-tight">Festival Merch</p>
+</div>
+<!-- ROW 5 -->
+<div class="aspect-square bg-white dark:bg-slate-800/50 border-2 border-primary/40 rounded-lg flex flex-col items-center justify-center p-2 text-center hover:border-primary cursor-pointer transition-colors group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform mb-1">person_search</span>
+<p class="text-[10px] md:text-xs font-bold leading-tight">Join a Flashmob</p>
+</div>
+<div class="aspect-square bg-primary text-white rounded-lg flex flex-col items-center justify-center p-2 text-center shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined text-xl mb-1">check_circle</span>
+<p class="text-[10px] md:text-xs font-bold leading-tight">Library Visit</p>
+</div>
+<div class="aspect-square bg-primary text-white rounded-lg flex flex-col items-center justify-center p-2 text-center shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined text-xl mb-1">check_circle</span>
+<p class="text-[10px] md:text-xs font-bold leading-tight">Mascot Name</p>
+</div>
+<div class="aspect-square bg-primary text-white rounded-lg flex flex-col items-center justify-center p-2 text-center shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined text-xl mb-1">check_circle</span>
+<p class="text-[10px] md:text-xs font-bold leading-tight">Robotics Demo</p>
+</div>
+<div class="aspect-square bg-slate-200 dark:bg-slate-900/50 border-2 border-transparent rounded-lg flex flex-col items-center justify-center p-2 text-center opacity-50 cursor-not-allowed">
+<span class="material-symbols-outlined text-slate-500 mb-1">lock</span>
+<p class="text-[10px] md:text-xs font-bold leading-tight text-slate-500">Scan Final Poster</p>
+</div>
+</div>
+</main>
+<!-- Floating Scan QR Button -->
+<div class="fixed bottom-8 left-0 right-0 flex justify-center z-50 px-4">
+<button class="bg-primary hover:bg-primary/90 text-white font-bold py-4 px-10 rounded-full shadow-[0_10px_40px_-10px_rgba(37,123,244,0.6)] flex items-center gap-3 transition-transform active:scale-95 group">
+<span class="material-symbols-outlined text-2xl group-hover:rotate-12 transition-transform">qr_code_scanner</span>
+<span class="tracking-wide uppercase text-sm">Scan QR Code</span>
+<div class="absolute -top-1 -right-1 flex h-4 w-4">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+<span class="relative inline-flex rounded-full h-4 w-4 bg-white/20"></span>
+</div>
+</button>
+</div>
+<!-- Notification Feed (Floating Right Desktop) -->
+<div class="hidden lg:block fixed right-8 top-32 w-64 space-y-4">
+<div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-primary/20 rounded-xl p-4 shadow-xl">
+<h4 class="text-xs font-bold text-primary mb-3 uppercase tracking-wider">Recent Activity</h4>
+<div class="space-y-3">
+<div class="flex gap-3">
+<div class="size-6 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-sm">celebration</span>
+</div>
+<p class="text-[11px] leading-tight"><span class="font-bold">Jordan</span> just completed a BINGO!</p>
+</div>
+<div class="flex gap-3">
+<div class="size-6 bg-primary/20 text-primary rounded-full flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-sm">bolt</span>
+</div>
+<p class="text-[11px] leading-tight"><span class="font-bold">You</span> scanned 'Library Visit' (+100 XP)</p>
+</div>
+<div class="flex gap-3">
+<div class="size-6 bg-orange-500/20 text-orange-500 rounded-full flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+</div>
+<p class="text-[11px] leading-tight">New challenge unlocked in <span class="font-bold">Games</span></p>
+</div>
+</div>
+</div>
+<div class="bg-primary text-white rounded-xl p-4 shadow-xl relative overflow-hidden">
+<div class="relative z-10">
+<p class="text-[10px] font-bold uppercase opacity-80">Next Reward</p>
+<p class="font-bold text-sm">Fest T-Shirt</p>
+<div class="mt-2 w-full bg-white/20 h-1.5 rounded-full">
+<div class="bg-white h-full rounded-full" style="width: 80%"></div>
+</div>
+<p class="text-[10px] mt-1 text-right">250 XP to go</p>
+</div>
+<span class="material-symbols-outlined absolute -bottom-2 -right-2 text-6xl opacity-10 rotate-12">redeem</span>
+</div>
+</div>
+</div>
+</body></html>
