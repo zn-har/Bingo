@@ -4,6 +4,7 @@
 
 const BoardPage = (() => {
   let pollTimer = null;
+  let lastGameState = null;
 
   function render(container) {
     const playerId = Utils.getPlayerId();
@@ -23,6 +24,9 @@ const BoardPage = (() => {
         API.getGameState(),
         API.getPlayer(playerId),
       ]);
+
+      // Store initial game state
+      lastGameState = gameState;
 
       // Check if game ended
       if (!gameState.game_active) {
@@ -152,14 +156,63 @@ const BoardPage = (() => {
     pollTimer = setInterval(async () => {
       try {
         const gameState = await API.getGameState();
-        if (!gameState.game_active) {
+
+        // Check if game state changed from active to inactive
+        if (lastGameState && lastGameState.game_active && !gameState.game_active) {
           stopPolling();
-          window.location.hash = '#gameover';
+          // Game just ended - fetch winners and show notification
+          const winners = await API.getWinners();
+          showWinnerNotification(winners);
+          return;
         }
+
+        lastGameState = gameState;
       } catch (_) {
         // Ignore polling errors
       }
-    }, 15000);
+    }, 15000); // Poll every 15 seconds
+  }
+
+  function showWinnerNotification(winners) {
+    // Remove existing modal if any
+    const existing = document.getElementById('winner-modal');
+    if (existing) existing.remove();
+
+    // Get unique winners
+    const uniqueWinners = [...new Set(winners.map(w => w.player_name))];
+    const winnerText = uniqueWinners.length === 1
+      ? `${uniqueWinners[0]} won!`
+      : `${uniqueWinners.join(', ')} won!`;
+
+    const modal = document.createElement('div');
+    modal.id = 'winner-modal';
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+      <div class="modal-card fade-in">
+        <div style="text-align:center;margin-bottom:20px;">
+          <span class="material-symbols-outlined" style="font-size:48px;color:var(--success);">celebration</span>
+        </div>
+        <h3 class="modal-title" style="color:var(--success);">🎉 Bingo!</h3>
+        <p class="modal-sub">${escapeHtml(winnerText)}</p>
+
+        <div style="margin-top:20px;padding:15px;background:var(--bg-light);border-radius:8px;">
+          <p style="margin:0 0 10px 0;font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;">Winners</p>
+          ${uniqueWinners.map(name => `
+            <p style="margin:5px 0;font-weight:600;color:var(--primary);">✓ ${escapeHtml(name)}</p>
+          `).join('')}
+        </div>
+
+        <button class="modal-close" id="close-winner-modal" style="margin-top:20px;">View Results</button>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal || e.target.id === 'close-winner-modal') {
+        modal.remove();
+        window.location.hash = '#gameover';
+      }
+    });
   }
 
   function stopPolling() {
