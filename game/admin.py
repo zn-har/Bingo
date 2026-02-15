@@ -53,7 +53,8 @@ class ScanRecordAdmin(admin.ModelAdmin):
 
 @admin.register(GameState)
 class GameStateAdmin(admin.ModelAdmin):
-    list_display = ("game_active", "max_winners")
+    list_display = ("__str__", "game_active", "max_winners", "allow_duplicate_scans")
+    list_editable = ("game_active", "max_winners", "allow_duplicate_scans")
 
     def has_add_permission(self, request):
         # Prevent creating additional instances

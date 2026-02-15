@@ -18,7 +18,7 @@ const SignupPage = (() => {
           </div>
           <div class="form-group">
             <label class="form-label" for="signup-phone">Phone Number</label>
-            <input class="form-input" id="signup-phone" type="tel" placeholder="Enter your phone number" required autocomplete="tel" />
+            <input class="form-input" id="signup-phone" type="tel" placeholder="Enter 10-digit phone number" required autocomplete="tel" maxlength="10" pattern="[0-9]{10}" inputmode="numeric" />
           </div>
           <button class="btn-primary" type="submit" id="signup-btn">
             <span class="material-symbols-outlined">person_add</span>
@@ -41,6 +41,12 @@ const SignupPage = (() => {
 
     if (!name || !phone) {
       Utils.showToast("Please fill in all fields", "error");
+      return;
+    }
+
+    const digits = phone.replace(/\D/g, "");
+    if (digits.length !== 10) {
+      Utils.showToast("Phone number must be exactly 10 digits", "error");
       return;
     }
 

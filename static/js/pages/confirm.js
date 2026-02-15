@@ -123,11 +123,11 @@ const ConfirmPage = (() => {
     try {
       const result = await API.submitScan(playerId, targetId, taskId);
 
-      // Check for wins
-      if (result.new_wins && result.new_wins.length > 0) {
-        showWinResult(container, result.new_wins);
+      // Check for win
+      if (result.new_win) {
+        showWinResult(container);
       } else {
-        showSuccessResult(container);
+        showSuccessResult(container, result.completed_lines, result.lines_to_win);
       }
 
       // Check if game ended
@@ -141,14 +141,14 @@ const ConfirmPage = (() => {
     }
   }
 
-  function showSuccessResult(container) {
+  function showSuccessResult(container, completedLines, linesToWin) {
     container.innerHTML = `
       <div class="result-card fade-in">
         <div class="result-icon result-icon--success">
           <span class="material-symbols-outlined">check_circle</span>
         </div>
         <p class="result-title">Task Completed!</p>
-        <p class="result-message">Nice work! Keep scanning to fill your board.</p>
+        <p class="result-message">Lines: ${completedLines} / ${linesToWin} — Keep scanning!</p>
         <div style="max-width:300px;margin:0 auto;">
           <button class="btn-primary" onclick="window.location.hash='#board'">
             <span class="material-symbols-outlined">grid_view</span>
@@ -159,23 +159,14 @@ const ConfirmPage = (() => {
     `;
   }
 
-  function showWinResult(container, winTypes) {
-    const winLabel = winTypes
-      .map((w) => {
-        if (w === "row") return "Row";
-        if (w === "column") return "Column";
-        if (w === "full") return "Full Board";
-        return w;
-      })
-      .join(", ");
-
+  function showWinResult(container) {
     container.innerHTML = `
       <div class="result-card fade-in">
         <div class="result-icon result-icon--success">
           <span class="material-symbols-outlined">emoji_events</span>
         </div>
         <p class="result-title">BINGO!</p>
-        <p class="result-message">You completed a ${escapeHtml(winLabel)}! Congratulations!</p>
+        <p class="result-message">You completed 5 lines! Congratulations!</p>
         <div style="max-width:300px;margin:0 auto;">
           <button class="btn-primary" onclick="window.location.hash='#board'">
             <span class="material-symbols-outlined">grid_view</span>

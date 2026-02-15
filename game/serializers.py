@@ -28,6 +28,12 @@ class PlayerRegistrationSerializer(serializers.ModelSerializer):
             "phone": {"validators": []},
         }
 
+    def validate_phone(self, value):
+        digits = "".join(c for c in value if c.isdigit())
+        if len(digits) != 10:
+            raise serializers.ValidationError("Phone number must be exactly 10 digits.")
+        return digits
+
 
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:

@@ -67,6 +67,10 @@ class GameState(models.Model):
 
     game_active = models.BooleanField(default=True)
     max_winners = models.IntegerField(default=10)
+    allow_duplicate_scans = models.BooleanField(
+        default=False,
+        help_text="Allow a player to scan the same person more than once (for different tasks).",
+    )
 
     class Meta:
         verbose_name = "Game State"

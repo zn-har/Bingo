@@ -41,41 +41,36 @@ def _generate_qr_dataurl(player_id):
     return f"data:image/png;base64,{img_base64}"
 
 
-def _check_wins(player):
-    """Check if a player has completed a row, column, diagonal, or full board."""
+LINES_TO_WIN = 5
+
+
+def _count_completed_lines(player):
+    """Count how many lines (rows, columns, diagonals) a player has completed."""
     completed_positions = set(
         ScanRecord.objects.filter(scanner=player).values_list("task__position", flat=True)
     )
 
-    wins = []
+    count = 0
 
-    # Check rows
+    # Check all 5 rows
     for row in range(5):
         row_positions = set(range(row * 5, row * 5 + 5))
         if row_positions.issubset(completed_positions):
-            wins.append("row")
-            break
+            count += 1
 
-    # Check columns
+    # Check all 5 columns
     for col in range(5):
         col_positions = {col + row * 5 for row in range(5)}
         if col_positions.issubset(completed_positions):
-            wins.append("column")
-            break
+            count += 1
 
-    # Check diagonals
-    diagonal1 = {0, 6, 12, 18, 24}  # Top-left to bottom-right
-    diagonal2 = {4, 8, 12, 16, 20}  # Top-right to bottom-left
-    if diagonal1.issubset(completed_positions):
-        wins.append("diagonal")
-    elif diagonal2.issubset(completed_positions):
-        wins.append("diagonal")
+    # Check both diagonals
+    if {0, 6, 12, 18, 24}.issubset(completed_positions):
+        count += 1
+    if {4, 8, 12, 16, 20}.issubset(completed_positions):
+        count += 1
 
-    # Check full board
-    if len(completed_positions) >= 25:
-        wins.append("full")
-
-    return wins
+    return count
 
 
 @api_view(["POST"])
@@ -183,6 +178,14 @@ def submit_scan(request):
     except Task.DoesNotExist:
         return Response({"error": "Task not found"}, status=status.HTTP_404_NOT_FOUND)
 
+    # Prevent scanning the same person more than once (unless allowed)
+    if not game.allow_duplicate_scans:
+        if ScanRecord.objects.filter(scanner=scanner, target=target).exists():
+            return Response(
+                {"error": "You already scanned this person"},
+                status=status.HTTP_409_CONFLICT,
+            )
+
     # Prevent duplicate scan for same task
     if ScanRecord.objects.filter(scanner=scanner, task=task).exists():
         return Response(
@@ -193,13 +196,14 @@ def submit_scan(request):
     # Create scan record
     scan = ScanRecord.objects.create(scanner=scanner, target=target, task=task)
 
-    # Check for wins
-    win_types = _check_wins(scanner)
-    new_wins = []
-    for win_type in win_types:
-        if not Winner.objects.filter(player=scanner, win_type=win_type).exists():
-            Winner.objects.create(player=scanner, win_type=win_type)
-            new_wins.append(win_type)
+    # Check for win (player needs 5 completed lines)
+    completed_lines = _count_completed_lines(scanner)
+    is_winner = completed_lines >= LINES_TO_WIN
+    new_win = False
+
+    if is_winner and not Winner.objects.filter(player=scanner).exists():
+        Winner.objects.create(player=scanner, win_type="bingo")
+        new_win = True
 
     # Check if game should end
     total_winners = Winner.objects.values("player").distinct().count()
@@ -210,7 +214,9 @@ def submit_scan(request):
     return Response(
         {
             "scan": ScanRecordSerializer(scan).data,
-            "new_wins": new_wins,
+            "completed_lines": completed_lines,
+            "lines_to_win": LINES_TO_WIN,
+            "new_win": new_win,
             "game_active": game.game_active,
         },
         status=status.HTTP_201_CREATED,
