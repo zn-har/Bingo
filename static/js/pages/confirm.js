@@ -4,45 +4,53 @@
 
 const ConfirmPage = (() => {
   let targetId = null;
+  let selectedTaskId = null;
 
-  function render(container, scannedTargetId) {
+  function render(container, scannedTargetId, taskId) {
     const playerId = Utils.getPlayerId();
     if (!playerId) {
-      window.location.hash = '#signup';
+      window.location.hash = "#signup";
+      return;
+    }
+
+    const parsedTaskId = parseInt(taskId, 10);
+    if (!Number.isFinite(parsedTaskId)) {
+      Utils.showToast("Select a task from the board first", "info");
+      window.location.hash = "#board";
       return;
     }
 
     targetId = scannedTargetId;
+    selectedTaskId = parsedTaskId;
     Utils.showLoading(container);
-    loadConfirmation(container, playerId, targetId);
+    loadConfirmation(container, playerId, targetId, selectedTaskId);
   }
 
-  async function loadConfirmation(container, playerId, targetId) {
+  async function loadConfirmation(container, playerId, targetId, taskId) {
     try {
       const [targetPlayer, board] = await Promise.all([
         API.getPlayer(targetId),
         API.getBoard(playerId),
       ]);
 
-      // Filter incomplete tasks (exclude free space)
-      const incompleteTasks = board
-        .filter(c => !c.completed && !c.is_free_space)
-        .sort((a, b) => a.position - b.position);
-
-      if (incompleteTasks.length === 0) {
+      const selectedTask = board.find((c) => c.task_id === taskId);
+      if (
+        !selectedTask ||
+        selectedTask.completed
+      ) {
         container.innerHTML = `
-          <div class="confirm-container fade-in">
-            <div class="confirm-card">
-              <div class="confirm-icon">
-                <span class="material-symbols-outlined">celebration</span>
-              </div>
-              <h3 class="confirm-title">All tasks completed!</h3>
-              <p class="confirm-subtitle">You've already finished every task on your board.</p>
+          <div class="result-card fade-in">
+            <div class="result-icon result-icon--error">
+              <span class="material-symbols-outlined">error</span>
             </div>
-            <button class="btn-secondary" onclick="window.location.hash='#board'">
-              <span class="material-symbols-outlined">arrow_back</span>
-              Back to Board
-            </button>
+            <p class="result-title">Task unavailable</p>
+            <p class="result-message">That task is already completed or no longer available.</p>
+            <div style="max-width:300px;margin:0 auto;">
+              <button class="btn-primary" onclick="window.location.hash='#board'">
+                <span class="material-symbols-outlined">grid_view</span>
+                Back to Board
+              </button>
+            </div>
           </div>
         `;
         return;
@@ -55,14 +63,23 @@ const ConfirmPage = (() => {
               <span class="material-symbols-outlined">person</span>
             </div>
             <h3 class="confirm-title">You scanned ${escapeHtml(targetPlayer.name)}</h3>
-            <p class="confirm-subtitle">Select a task to mark as completed</p>
+            <p class="confirm-subtitle">Confirm the task you want to complete</p>
           </div>
 
-          <p class="task-select-label">Choose a task:</p>
-          <div class="task-list" id="task-list"></div>
+          <p class="task-select-label">Selected task:</p>
+          <div class="task-list">
+            <div class="task-item" style="pointer-events:none;">
+              <span class="task-item-text">${escapeHtml(selectedTask.description)}</span>
+              <span class="material-symbols-outlined task-item-arrow">check</span>
+            </div>
+          </div>
 
           <div style="margin-top:16px;">
-            <button class="btn-secondary" onclick="window.location.hash='#board'">
+            <button class="btn-primary" id="confirm-task">
+              <span class="material-symbols-outlined">check_circle</span>
+              Confirm Task
+            </button>
+            <button class="btn-secondary" id="cancel-task" style="margin-top:8px;">
               <span class="material-symbols-outlined">arrow_back</span>
               Cancel
             </button>
@@ -70,7 +87,12 @@ const ConfirmPage = (() => {
         </div>
       `;
 
-      renderTaskList(incompleteTasks, playerId, targetId, container);
+      document.getElementById("confirm-task").addEventListener("click", () => {
+        submitTask(container, playerId, targetId, taskId);
+      });
+      document.getElementById("cancel-task").addEventListener("click", () => {
+        window.location.hash = "#board";
+      });
     } catch (err) {
       container.innerHTML = `
         <div class="result-card fade-in">
@@ -90,31 +112,12 @@ const ConfirmPage = (() => {
     }
   }
 
-  function renderTaskList(tasks, playerId, targetId, container) {
-    const list = document.getElementById('task-list');
-    if (!list) return;
-
-    list.innerHTML = tasks.map(task => `
-      <div class="task-item" data-task-id="${task.task_id}">
-        <span class="task-item-text">${escapeHtml(task.description)}</span>
-        <span class="material-symbols-outlined task-item-arrow">chevron_right</span>
-      </div>
-    `).join('');
-
-    list.addEventListener('click', (e) => {
-      const item = e.target.closest('.task-item');
-      if (!item) return;
-      const taskId = parseInt(item.dataset.taskId, 10);
-      submitTask(container, playerId, targetId, taskId);
-    });
-  }
-
   async function submitTask(container, playerId, targetId, taskId) {
     // Disable the list
-    const items = container.querySelectorAll('.task-item');
-    items.forEach(el => {
-      el.style.pointerEvents = 'none';
-      el.style.opacity = '0.5';
+    const items = container.querySelectorAll(".task-item");
+    items.forEach((el) => {
+      el.style.pointerEvents = "none";
+      el.style.opacity = "0.5";
     });
 
     try {
@@ -130,11 +133,11 @@ const ConfirmPage = (() => {
       // Check if game ended
       if (!result.game_active) {
         setTimeout(() => {
-          window.location.hash = '#gameover';
+          window.location.hash = "#gameover";
         }, 2000);
       }
     } catch (err) {
-      showErrorResult(container, err.message);
+      showErrorResult(container, err.message, taskId);
     }
   }
 
@@ -157,12 +160,14 @@ const ConfirmPage = (() => {
   }
 
   function showWinResult(container, winTypes) {
-    const winLabel = winTypes.map(w => {
-      if (w === 'row') return 'Row';
-      if (w === 'column') return 'Column';
-      if (w === 'full') return 'Full Board';
-      return w;
-    }).join(', ');
+    const winLabel = winTypes
+      .map((w) => {
+        if (w === "row") return "Row";
+        if (w === "column") return "Column";
+        if (w === "full") return "Full Board";
+        return w;
+      })
+      .join(", ");
 
     container.innerHTML = `
       <div class="result-card fade-in">
@@ -184,7 +189,7 @@ const ConfirmPage = (() => {
     launchConfetti();
   }
 
-  function showErrorResult(container, message) {
+  function showErrorResult(container, message, taskId) {
     container.innerHTML = `
       <div class="result-card fade-in">
         <div class="result-icon result-icon--error">
@@ -193,7 +198,7 @@ const ConfirmPage = (() => {
         <p class="result-title">Scan Failed</p>
         <p class="result-message">${escapeHtml(message)}</p>
         <div style="max-width:300px;margin:0 auto;display:flex;flex-direction:column;gap:8px;">
-          <button class="btn-primary" onclick="window.location.hash='#scan'">
+          <button class="btn-primary" onclick="window.location.hash='#scan/${taskId}'">
             <span class="material-symbols-outlined">qr_code_scanner</span>
             Try Again
           </button>
@@ -207,21 +212,29 @@ const ConfirmPage = (() => {
   }
 
   function launchConfetti() {
-    const colors = ['#257bf4', '#22c55e', '#f59e0b', '#ef4444', '#a855f7', '#ec4899'];
+    const colors = [
+      "#257bf4",
+      "#22c55e",
+      "#f59e0b",
+      "#ef4444",
+      "#a855f7",
+      "#ec4899",
+    ];
     for (let i = 0; i < 50; i++) {
-      const piece = document.createElement('div');
-      piece.className = 'confetti-piece';
-      piece.style.left = Math.random() * 100 + 'vw';
-      piece.style.background = colors[Math.floor(Math.random() * colors.length)];
-      piece.style.animationDuration = (2 + Math.random() * 3) + 's';
-      piece.style.animationDelay = Math.random() * 1 + 's';
+      const piece = document.createElement("div");
+      piece.className = "confetti-piece";
+      piece.style.left = Math.random() * 100 + "vw";
+      piece.style.background =
+        colors[Math.floor(Math.random() * colors.length)];
+      piece.style.animationDuration = 2 + Math.random() * 3 + "s";
+      piece.style.animationDelay = Math.random() * 1 + "s";
       document.body.appendChild(piece);
       setTimeout(() => piece.remove(), 6000);
     }
   }
 
   function escapeHtml(str) {
-    const div = document.createElement('div');
+    const div = document.createElement("div");
     div.textContent = str;
     return div.innerHTML;
   }

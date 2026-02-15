@@ -86,4 +86,3 @@ class BoardCellSerializer(serializers.Serializer):
     description = serializers.CharField()
     position = serializers.IntegerField()
     completed = serializers.BooleanField()
-    is_free_space = serializers.BooleanField()

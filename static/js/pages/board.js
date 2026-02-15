@@ -53,6 +53,7 @@ const BoardPage = (() => {
             </div>
           </div>
 
+          <p class="board-hint">Tap a task to scan a player</p>
           <!-- Bingo Grid -->
           <div class="bingo-grid" id="bingo-grid"></div>
         </div>
@@ -85,15 +86,6 @@ const BoardPage = (() => {
 
     grid.innerHTML = sorted
       .map((cell) => {
-        if (cell.is_free_space) {
-          return `
-          <div class="bingo-cell bingo-cell--free">
-            <span class="material-symbols-outlined bingo-cell-icon" style="color:var(--primary);font-size:24px;">star</span>
-            <span class="bingo-cell-text" style="color:var(--primary);font-weight:800;text-transform:uppercase;font-size:7px;letter-spacing:0.05em;">FREE</span>
-          </div>
-        `;
-        }
-
         if (cell.completed) {
           return `
           <div class="bingo-cell bingo-cell--completed">
@@ -104,13 +96,22 @@ const BoardPage = (() => {
         }
 
         return `
-        <div class="bingo-cell bingo-cell--incomplete">
+        <div class="bingo-cell bingo-cell--incomplete" data-task-id="${cell.task_id}">
           <span class="material-symbols-outlined bingo-cell-icon" style="color:var(--primary);">radio_button_unchecked</span>
           <span class="bingo-cell-text">${escapeHtml(cell.description)}</span>
         </div>
       `;
       })
       .join("");
+
+    grid.addEventListener("click", (e) => {
+      const cell = e.target.closest(".bingo-cell--incomplete");
+      if (!cell) return;
+      const taskId = parseInt(cell.dataset.taskId, 10);
+      if (!Number.isFinite(taskId)) return;
+      Utils.showToast("Task selected. Scan a player.", "info");
+      window.location.hash = `#scan/${taskId}`;
+    });
   }
 
   function updateHeader(player) {

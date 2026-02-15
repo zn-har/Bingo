@@ -3,7 +3,9 @@
    ======================================== */
 
 /* --- Reset & Base --- */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -24,10 +26,10 @@
   --error: #ef4444;
   --error-light: #fee2e2;
   --warning: #f59e0b;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
-  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
-  --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
-  --shadow-primary: 0 4px 20px rgba(37,123,244,0.25);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
+  --shadow-primary: 0 4px 20px rgba(37, 123, 244, 0.25);
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
@@ -40,7 +42,11 @@ html {
 }
 
 body {
-  font-family: 'Spline Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    "Spline Sans",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -55,7 +61,7 @@ body {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(255,255,255,0.85);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
@@ -198,7 +204,9 @@ body {
   text-transform: uppercase;
   cursor: pointer;
   box-shadow: var(--shadow-primary);
-  transition: transform 0.15s, background 0.2s;
+  transition:
+    transform 0.15s,
+    background 0.2s;
 }
 
 .btn-scan:active {
@@ -223,7 +231,9 @@ body {
   font-weight: 600;
   box-shadow: var(--shadow-lg);
   opacity: 0;
-  transition: opacity 0.3s, transform 0.3s;
+  transition:
+    opacity 0.3s,
+    transform 0.3s;
   max-width: calc(100vw - 32px);
   text-align: center;
 }
@@ -249,7 +259,9 @@ body {
 }
 
 /* --- Utility classes --- */
-.hidden { display: none !important; }
+.hidden {
+  display: none !important;
+}
 
 /* --- Signup Page --- */
 .signup-container {
@@ -344,7 +356,9 @@ body {
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s, transform 0.15s;
+  transition:
+    background 0.2s,
+    transform 0.15s;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -445,6 +459,14 @@ body {
   transition: width 0.5s ease;
 }
 
+.board-hint {
+  margin: 12px 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
 /* --- Bingo Grid --- */
 .bingo-grid {
   display: grid;
@@ -453,7 +475,9 @@ body {
 }
 
 @media (min-width: 400px) {
-  .bingo-grid { gap: 8px; }
+  .bingo-grid {
+    gap: 8px;
+  }
 }
 
 .bingo-cell {
@@ -466,7 +490,9 @@ body {
   padding: 4px;
   text-align: center;
   cursor: pointer;
-  transition: transform 0.15s, border-color 0.2s;
+  transition:
+    transform 0.15s,
+    border-color 0.2s;
   position: relative;
   overflow: hidden;
 }
@@ -490,18 +516,7 @@ body {
   background: var(--primary);
   border: 2px solid var(--primary);
   color: white;
-  box-shadow: 0 2px 8px rgba(37,123,244,0.2);
-}
-
-/* Free space */
-.bingo-cell--free {
-  background: var(--primary-light);
-  border: 2px solid var(--primary);
-  cursor: default;
-}
-
-.bingo-cell--free:active {
-  transform: none;
+  box-shadow: 0 2px 8px rgba(37, 123, 244, 0.2);
 }
 
 .bingo-cell-icon {
@@ -510,7 +525,9 @@ body {
 }
 
 @media (min-width: 400px) {
-  .bingo-cell-icon { font-size: 20px; }
+  .bingo-cell-icon {
+    font-size: 20px;
+  }
 }
 
 .bingo-cell-text {
@@ -521,11 +538,15 @@ body {
 }
 
 @media (min-width: 360px) {
-  .bingo-cell-text { font-size: 9px; }
+  .bingo-cell-text {
+    font-size: 9px;
+  }
 }
 
 @media (min-width: 400px) {
-  .bingo-cell-text { font-size: 10px; }
+  .bingo-cell-text {
+    font-size: 10px;
+  }
 }
 
 /* --- Scanner Overlay --- */
@@ -543,7 +564,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   color: white;
   z-index: 2;
 }
@@ -554,7 +575,7 @@ body {
 }
 
 .scanner-close {
-  background: rgba(255,255,255,0.15);
+  background: rgba(255, 255, 255, 0.15);
   border: none;
   color: white;
   width: 40px;
@@ -591,7 +612,7 @@ body {
   bottom: 40px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   color: white;
   padding: 10px 20px;
   border-radius: var(--radius-full);
@@ -664,7 +685,9 @@ body {
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
   min-height: 48px;
 }
 
@@ -835,7 +858,7 @@ body {
   position: fixed;
   inset: 0;
   z-index: 70;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -910,17 +933,30 @@ body {
 
 /* --- Animations --- */
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .fade-in {
@@ -929,8 +965,14 @@ body {
 
 /* --- Confetti --- */
 @keyframes confetti-fall {
-  0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
 }
 
 .confetti-piece {

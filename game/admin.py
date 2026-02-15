@@ -31,7 +31,9 @@ class PlayerAdmin(admin.ModelAdmin):
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
     list_display = ("position", "description")
+    list_editable = ("description",)
     ordering = ("position",)
+    search_fields = ("description",)
 
 
 @admin.register(ScanRecord)

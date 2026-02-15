@@ -19,8 +19,6 @@ from .serializers import (
     WinnerSerializer,
 )
 
-FREE_SPACE_POSITION = 12
-
 
 def _generate_qr_dataurl(player_id):
     """Generate a QR code as a data URL (no file storage)."""
@@ -48,8 +46,6 @@ def _check_wins(player):
     completed_positions = set(
         ScanRecord.objects.filter(scanner=player).values_list("task__position", flat=True)
     )
-    # Free space is always completed
-    completed_positions.add(FREE_SPACE_POSITION)
 
     wins = []
 
@@ -138,8 +134,7 @@ def get_board(request, player_id):
                 "task_id": task.id,
                 "description": task.description,
                 "position": task.position,
-                "completed": task.id in completed_task_ids or task.position == FREE_SPACE_POSITION,
-                "is_free_space": task.position == FREE_SPACE_POSITION,
+                "completed": task.id in completed_task_ids,
             }
         )
 

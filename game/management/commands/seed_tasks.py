@@ -15,7 +15,7 @@ TASKS = [
     "Mascot Selfie",
     "Find a Senior",
     "Food Court Check-in",
-    "FREE SPACE",
+    "Stage Selfie",
     "Karaoke Hit",
     "Blue Pen Quest",
     "Spot the Dean",
@@ -42,5 +42,8 @@ class Command(BaseCommand):
                 Task.objects.create(description=desc, position=i)
             self.stdout.write(self.style.SUCCESS(f"Created {len(TASKS)} tasks."))
 
-        GameState.get_instance()
-        self.stdout.write(self.style.SUCCESS("Game state initialized."))
+        gs = GameState.get_instance()
+        if gs.max_winners != 10:
+            gs.max_winners = 10
+            gs.save()
+        self.stdout.write(self.style.SUCCESS("Game state initialized (max_winners=10)."))

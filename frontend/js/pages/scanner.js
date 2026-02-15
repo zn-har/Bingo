@@ -4,13 +4,23 @@
 
 const ScannerPage = (() => {
   let scanner = null;
+  let selectedTaskId = null;
 
-  function render(container) {
+  function render(container, taskId) {
     const playerId = Utils.getPlayerId();
     if (!playerId) {
       window.location.hash = "#signup";
       return;
     }
+
+    const parsedTaskId = parseInt(taskId, 10);
+    if (!Number.isFinite(parsedTaskId)) {
+      Utils.showToast("Select a task from the board first", "info");
+      window.location.hash = "#board";
+      return;
+    }
+
+    selectedTaskId = parsedTaskId;
 
     // Hide header and bottom bar for full-screen scanner
     document.getElementById("app-header").classList.add("hidden");
@@ -91,8 +101,8 @@ const ScannerPage = (() => {
       return;
     }
 
-    // Navigate to confirmation with scanned ID
-    window.location.hash = `#confirm/${scannedId}`;
+    // Navigate to confirmation with scanned ID and selected task
+    window.location.hash = `#confirm/${scannedId}/${selectedTaskId}`;
   }
 
   async function stopScanner() {

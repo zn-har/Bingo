@@ -33,14 +33,23 @@ const App = (() => {
     }
 
     if (hash.startsWith("#confirm/")) {
-      const targetId = hash.split("/")[1];
-      if (Utils.isValidUUID(targetId)) {
-        ConfirmPage.render(container, targetId);
+      const parts = hash.split("/");
+      const targetId = parts[1];
+      const taskId = parts[2];
+      const parsedTaskId = parseInt(taskId, 10);
+      if (Utils.isValidUUID(targetId) && Number.isFinite(parsedTaskId)) {
+        ConfirmPage.render(container, targetId, parsedTaskId);
         bottomBar().classList.add("hidden");
       } else {
-        Utils.showToast("Invalid player ID", "error");
+        Utils.showToast("Invalid scan details", "error");
         window.location.hash = "#board";
       }
+      return;
+    }
+
+    if (hash.startsWith("#scan/")) {
+      const taskId = hash.split("/")[1];
+      ScannerPage.render(container, taskId);
       return;
     }
 
@@ -52,7 +61,8 @@ const App = (() => {
         break;
 
       case "#scan":
-        ScannerPage.render(container);
+        Utils.showToast("Select a task from the board first", "info");
+        window.location.hash = "#board";
         break;
 
       case "#gameover":

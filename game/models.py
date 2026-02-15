@@ -22,7 +22,7 @@ class Task(models.Model):
     description = models.CharField(max_length=200)
     position = models.IntegerField(
         unique=True,
-        help_text="Grid position 0-24 (left-to-right, top-to-bottom). Position 12 is the free space.",
+        help_text="Grid position 0-24 (left-to-right, top-to-bottom).",
     )
 
     class Meta:
