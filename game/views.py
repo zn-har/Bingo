@@ -1,6 +1,7 @@
 import base64
 import io
 import os
+import random
 
 import qrcode
 from django.core.files.base import ContentFile
@@ -44,11 +45,28 @@ def _generate_qr_dataurl(player_id):
 LINES_TO_WIN = 5
 
 
+def _get_shuffle_map(player_id):
+    """Return a mapping of original task position -> shuffled display position for a player.
+
+    Each player gets a unique but deterministic layout seeded by their UUID.
+    """
+    rng = random.Random(str(player_id))
+    positions = list(range(25))
+    rng.shuffle(positions)
+    # positions[i] = the original DB position of the task shown at display slot i
+    # We need the inverse: original_pos -> display_pos
+    return {orig: display for display, orig in enumerate(positions)}
+
+
 def _count_completed_lines(player):
     """Count how many lines (rows, columns, diagonals) a player has completed."""
-    completed_positions = set(
+    completed_db_positions = set(
         ScanRecord.objects.filter(scanner=player).values_list("task__position", flat=True)
     )
+
+    # Map completed DB positions to shuffled display positions
+    shuffle_map = _get_shuffle_map(player.id)
+    completed_positions = {shuffle_map[pos] for pos in completed_db_positions if pos in shuffle_map}
 
     count = 0
 
@@ -122,13 +140,15 @@ def get_board(request, player_id):
         ScanRecord.objects.filter(scanner=player).values_list("task_id", flat=True)
     )
 
+    shuffle_map = _get_shuffle_map(player.id)
+
     cells = []
     for task in tasks:
         cells.append(
             {
                 "task_id": task.id,
                 "description": task.description,
-                "position": task.position,
+                "position": shuffle_map.get(task.position, task.position),
                 "completed": task.id in completed_task_ids,
             }
         )
